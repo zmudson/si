@@ -21,6 +21,12 @@ for i in range(8, 21):
     values = odds.Odds
     season_teams = list()
     for j in range(len(teams)):
+        if teams[j] == 'New Orleans Hornets':
+            teams[j] = 'New Orleans Pelicans'
+        if teams[j] == 'Charlotte Bobcats':
+            teams[j] = 'Charlotte Hornets'
+        if teams[j] == 'New Jersey Nets':
+            teams[j] = 'Brooklyn Nets'
         season_teams.append(Team(teams[j], values[j]))
     seasons.append(Season(str(2000+i) + '/' + str(2000 + i + 1), season_teams))
 
@@ -49,7 +55,7 @@ for i in range(8, 21):
 
     #debugging purposes
     #season_games[1000].print_match()
-    
+
     seasons[i-8].matches = season_games
 
 #seasons = [Season("2008/2009", [Team("A", 10), Team("B", 10)], [Match("27-03-2022", Team("A", 10), Team("B", 10), 54, 55)]), Season("2009/2010", [Team("A", 10), Team("B", 10)], [])]
