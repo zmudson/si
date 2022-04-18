@@ -8,7 +8,6 @@ from playground.models import Season, Team, Match
 
 seasons = list()
 
-#C:\\Sem4\\SI-django\\si\\web\\
 PATH = "data\\preseason-odds\\"
 
 for i in range(8, 21):
@@ -28,9 +27,10 @@ for i in range(8, 21):
         if teams[j] == 'New Jersey Nets':
             teams[j] = 'Brooklyn Nets'
         season_teams.append(Team(teams[j], values[j]))
+    season_teams.sort(key=lambda x: x.name)
+
     seasons.append(Season(str(2000+i) + '/' + str(2000 + i + 1), season_teams))
 
-#print(seasons[1].period)
 PATH = "data\\games\\"
 
 for i in range(8, 21):
@@ -50,15 +50,21 @@ for i in range(8, 21):
 
     season_games = list()
     for j in range(len(dates)):
-        season_games.append(Match(dates[j], home_teams[j], away_teams[j], home_scores[j], away_scores[j], home_odds[j],
+        home = None
+        away = None
+        for team in seasons[i-8].teams:
+            if team.name == home_teams[j]:
+                home = team
+            if team.name == away_teams[j]:
+                away = team
+        if not home or not away:
+            continue
+        season_games.append(Match(dates[j], home, away, home_scores[j], away_scores[j], home_odds[j],
                                   away_odds[j], winners[j], playoffs[j], preseasons[j]))
 
-    #debugging purposes
-    #season_games[1000].print_match()
 
     seasons[i-8].matches = season_games
 
-#seasons = [Season("2008/2009", [Team("A", 10), Team("B", 10)], [Match("27-03-2022", Team("A", 10), Team("B", 10), 54, 55)]), Season("2009/2010", [Team("A", 10), Team("B", 10)], [])]
 
 
 def hello(request):
