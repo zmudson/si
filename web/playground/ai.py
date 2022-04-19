@@ -135,15 +135,15 @@ def train(seasons):
             odds.append(match.home_team_odds)
             preseason.append(match.home_team.value)
             form.append(match.home_team_form - match.away_team_form)
-            book.append(match.home_team_odds)
+            #book.append(match.home_team_odds)
             who_won.append(match.winner)
 
     #print(len(odds), len(preseason), len(form), len(book), len(labels))
     at['odds'] = odds
     at['preseason'] = preseason
     at['form'] = form
-    at['book'] = book
-
+    #at['book'] = book
+    print("1")
     lb['winner'] = who_won
 
     attributes = pd.DataFrame(data=at)
@@ -159,11 +159,12 @@ def train(seasons):
 
     classifier = DecisionTreeClassifier(criterion="entropy", ccp_alpha=0.025)
     print("2")
-    # # testing prunning alpha
+    # testing prunning alpha
+
     path = classifier.cost_complexity_pruning_path(attributes_train, labels_train)
     alphas = path['ccp_alphas']
     print("3")
-    find_ccp_alpha(alphas, attributes, labels)
+    #find_ccp_alpha(alphas, attributes, labels)
     print("4")
     classifier = classifier.fit(attributes_train, labels_train)
     print("5")
