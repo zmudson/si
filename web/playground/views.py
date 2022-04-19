@@ -18,7 +18,7 @@ ai.calc_form(seasons)
 
 start_time = time.time()
 print("siema")
-#ai.train(seasons)
+ai.train(seasons)
 print("nara")
 
 print(seasons[0].matches[-1].home_team_form, seasons[0].matches[1357].home_team_form, seasons[0].matches[1357].home_team.name)
