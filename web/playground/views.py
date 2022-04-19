@@ -2,70 +2,30 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 import jsonpickle
-import pandas as pd
 from playground.models import Season, Team, Match
+import time
+import pandas as pd
+import playground.ai as ai
 
 jsonpickle.set_encoder_options('simplejson',
                                use_decimal=True, sort_keys=True)
 
 seasons = list()
+ai.read_preseason_odds(seasons)
+ai.read_games_info(seasons)
 
-PATH = "data\\preseason-odds\\"
+ai.calc_form(seasons)
 
-for i in range(8, 21):
-    if i == 8:
-        READPATH = PATH + str(2000 + i) + '-0' + str(i + 1) + '-odds.csv'
-    else:
-        READPATH = PATH + str(2000 + i) + '-' + str(i + 1) + '-odds.csv'
-    odds = pd.read_csv(READPATH)
-    teams = odds.Team
-    values = odds.Odds
-    season_teams = list()
-    for j in range(len(teams)):
-        if teams[j] == 'New Orleans Hornets':
-            teams[j] = 'New Orleans Pelicans'
-        if teams[j] == 'Charlotte Bobcats':
-            teams[j] = 'Charlotte Hornets'
-        if teams[j] == 'New Jersey Nets':
-            teams[j] = 'Brooklyn Nets'
-        season_teams.append(Team(teams[j], values[j]))
-    season_teams.sort(key=lambda x: x.name)
+start_time = time.time()
+print("siema")
+#ai.train(seasons)
+print("nara")
 
-    seasons.append(Season(str(2000 + i) + '/' + str(2000 + i + 1), season_teams))
-
-PATH = "data\\games\\"
-
-for i in range(8, 21):
-    READPATH = PATH + str(2000 + i) + '-' + str(2000 + i + 1) + '.csv'
-    games = pd.read_csv(READPATH)
-
-    dates = games.Date
-    home_teams = games['Home Team']
-    away_teams = games['Away Team']
-    home_scores = games['Home Score']
-    away_scores = games['Away Score']
-    home_odds = games['Home Odds']
-    away_odds = games['Away Odds']
-    winners = games['Who Won']
-    playoffs = games['Playoffs']
-    preseasons = games['Preseason']
-
-    season_games = list()
-    for j in range(len(dates)):
-        home = None
-        away = None
-        for team in seasons[i - 8].teams:
-            if team.name == home_teams[j]:
-                home = team
-            if team.name == away_teams[j]:
-                away = team
-        if not home or not away:
-            continue
-        season_games.append(Match(dates[j], home, away, str(home_scores[j]), str(away_scores[j]), home_odds[j],
-                                  away_odds[j], str(winners[j]), str(playoffs[j]), str(preseasons[j])))
-
-    seasons[i - 8].matches = season_games
-
+print(seasons[0].matches[-1].home_team_form, seasons[0].matches[1357].home_team_form, seasons[0].matches[1357].home_team.name)
+print(seasons[0].matches[1346].away_team_form, seasons[0].matches[1346].away_team.name)
+print(seasons[0].matches[1326].home_team_form, seasons[0].matches[1326].home_team.name)
+print(seasons[0].matches[1314].home_team_form, seasons[0].matches[1314].home_team.name)
+print(time.time()-start_time)
 
 def hello(request):
     context = {
@@ -85,5 +45,5 @@ class SeasonView(APIView):
 class ResultView(APIView):
     def post(self, request):
         match = jsonpickle.decode(request.body.decode('utf-8'))
-        winner = match['home_team'] if match['winner'] == '0' else match['away_team']
+        winner = match['home_team_form'] if match['winner'] == '0' else match['away_team_form']
         return Response(jsonpickle.encode(winner, unpicklable=False))  # return winner

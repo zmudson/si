@@ -17,7 +17,35 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\data\games\2010-2011.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\games\2011-2012.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\games\2012-2013.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\data\preseason-odds\2008-09-odds.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\data\preseason-odds\2009-10-odds.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
