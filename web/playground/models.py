@@ -26,6 +26,8 @@ class Match:
         self.winner = winner
         self.playoffs = playoffs
         self.preseason = preseason
+        self.home_team_form = 1.0
+        self.away_team_form = 1.0
 
     def print_match(self):
         print(self.day, self.home_team, self.away_team, self.home_team_points, self.away_team_points,
