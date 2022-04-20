@@ -224,7 +224,7 @@ def test_entropy_ccp(attributes, labels):
     classifier = classifier.fit(attributes_train, labels_train)
     labels_prediction = classifier.predict(attributes_test)
     # Raport
-    print("Criterion = Entropy      ccp_alpha = 0.025")
+    print("Criterion = Entropy      ccp_alpha = 0.04")
     print(classification_report(labels_test, labels_prediction))
     print("")
 
@@ -238,7 +238,7 @@ def test_gini_cpp(attributes, labels):
     classifier = classifier.fit(attributes_train, labels_train)
     labels_prediction = classifier.predict(attributes_test)
     # Raport
-    print("Criterion = Gini     ccp_alpha = 0.025")
+    print("Criterion = Gini     ccp_alpha = 0.04")
     print(classification_report(labels_test, labels_prediction))
     print("")
 
