@@ -120,30 +120,30 @@ def find_ccp_alpha(alphas, attributes, labels):
     plt.title("Wykres zależności precyzji od ccp_alpha")
     plt.savefig("data\\prunning.png")
 
-
 def train(seasons):
-    # oodds przedsezonowe forme booka
+
     at = dict()
-    odds = list()
+    odds_home = list()
+    odds_away = list()
     preseason = list()
     form = list()
     book = list()
     who_won = list()
     lb = dict()
-    for season in seasons:
+    for i, season in enumerate(seasons):
+        if i > 9:
+            continue
         for match in reversed(season.matches):
-            odds.append(match.home_team_odds)
-            preseason.append(match.home_team.value)
+            odds_home.append(match.home_team_odds)
+            odds_away.append(match.away_team_odds)
+            preseason.append(int(match.home_team.value) / int(match.away_team.value))
             form.append(match.home_team_form - match.away_team_form)
-            #book.append(match.home_team_odds)
             who_won.append(match.winner)
 
-    #print(len(odds), len(preseason), len(form), len(book), len(labels))
-    at['odds'] = odds
+    at['odds_home'] = odds_home
+    at['odds_away'] = odds_away
     at['preseason'] = preseason
     at['form'] = form
-    #at['book'] = book
-    print("1")
     lb['winner'] = who_won
 
     attributes = pd.DataFrame(data=at)
