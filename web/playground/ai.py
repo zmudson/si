@@ -63,7 +63,7 @@ def read_games_info(seasons):
                     home = team
                 if team.name == away_teams[j]:
                     away = team
-            if not home or not away:
+            if not home or not away or preseasons[j] or playoffs[j]:
                 continue
             if home_odds[j] == '-':
                 home_odds[j] = 1.85
@@ -174,5 +174,14 @@ def train(seasons):
     # Raport
     from sklearn.metrics import classification_report
     print(classification_report(labels_test, labels_prediction))
+
+    x = 0
+    for i in range(len(labels_test.values)):
+        if labels_test.values[i] == labels_prediction[i]:
+            x = x + 1
+
+    print(x/len(labels_test.values))
+    print(labels_test.values)
+    print(labels_prediction)
 
 

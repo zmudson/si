@@ -38,6 +38,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\data\games\2020-2021.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\data\preseason-odds\2008-09-odds.csv">
           <value>
             <Attribute>

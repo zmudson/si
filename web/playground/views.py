@@ -21,10 +21,10 @@ print("siema")
 ai.train(seasons)
 print("nara")
 
-print(seasons[0].matches[-1].home_team_form, seasons[0].matches[1357].home_team_form, seasons[0].matches[1357].home_team.name)
-print(seasons[0].matches[1346].away_team_form, seasons[0].matches[1346].away_team.name)
-print(seasons[0].matches[1326].home_team_form, seasons[0].matches[1326].home_team.name)
-print(seasons[0].matches[1314].home_team_form, seasons[0].matches[1314].home_team.name)
+#print(seasons[0].matches[-1].home_team_form, seasons[0].matches[1357].home_team_form, seasons[0].matches[1357].home_team.name)
+#print(seasons[0].matches[1346].away_team_form, seasons[0].matches[1346].away_team.name)
+#print(seasons[0].matches[1326].home_team_form, seasons[0].matches[1326].home_team.name)
+#print(seasons[0].matches[1314].home_team_form, seasons[0].matches[1314].home_team.name)
 print(time.time()-start_time)
 
 def hello(request):
