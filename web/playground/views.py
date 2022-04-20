@@ -29,8 +29,8 @@ print(time.time()-start_time)
 
 def hello(request):
     context = {
-        'seasons': [season.period for season in seasons],
-        'startSeason': seasons[0].period
+        'seasons': [seasons[i].period for i in range(len(seasons)) if i > 9],
+        'startSeason': seasons[10].period
     }
     return render(request, 'index.html', context)
 
