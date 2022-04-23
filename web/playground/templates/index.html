@@ -18,15 +18,15 @@
                 align-items: center;
                 width: 100vw;
                 height: 100vh;
-                background-color: blue;
+                background-color: #fff;
             }
             form {
                 display: flex;
                 flex-direction: column;
                 justify-content: space-around;
                 width: 25vw;
-                height: 50vh;
-                background-color: red;
+                height: 60vh;
+                background-color: #F7F7F9;
             }
             .wrapper{
                 margin: 10px 5px;
@@ -35,6 +35,9 @@
                 display: flex;
                 justify-content: center;
             }
+            #result{
+                margin: 10px 0;
+            }
         </style>
     </head>
     <body>
@@ -42,7 +45,7 @@
             <form id="result-form">
                 <div class="wrapper season">
                     <label for="season">Season</label>
-                    <select name="season" id="season">
+                    <select class="form-control" name="season" id="season">
                         {% for season in seasons %}
                             <option value="{{season}}">{{season}}</option>
                         {% endfor %}
@@ -50,19 +53,15 @@
                 </div>
                 <div class="wrapper teams">
                     <label for="home-team">Home Team</label>
-                    <select name="home-team" id="home-team">
-
-                    </select>
-                    <label for="away-team">Away Team</label>
-                    <select name="away-team" id="away-team">
-
-                    </select>
+                    <select class="form-control" name="home-team" id="home-team"></select>
                 </div>
-                   <div class="wrapper match">
+                   <div class="wrapper teams">
+                    <label for="away-team">Away Team</label>
+                    <select class="form-control" name="away-team" id="away-team"></select>
+                </div>
+                <div class="wrapper match">
                      <label for="match">Match</label>
-                    <select name="match" id="match">
-
-                    </select>
+                    <select class="form-control" name="match" id="match"></select>
                 </div>
                 <div class="wrapper submit">
                     <button type="submit" class="btn btn-primary">Submit</button>
