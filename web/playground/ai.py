@@ -2,7 +2,6 @@ from functools import reduce
 import pandas as pd
 from playground.models import Season, Team, Match
 
-from sklearn.tree import DecisionTreeClassifier
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import accuracy_score
@@ -69,8 +68,8 @@ def read_games_info(seasons):
                 home_odds[j] = 1.85
             if away_odds[j] == '-':
                 away_odds[j] = 1.85
-            season_games.append(Match(dates[j], home, away, str(home_scores[j]), str(away_scores[j]), home_odds[j],
-                                      away_odds[j], str(winners[j]), str(playoffs[j]), str(preseasons[j])))
+            season_games.append(Match(dates[j], home, away, str(home_scores[j]), str(away_scores[j]), str(home_odds[j]),
+                                      str(away_odds[j]), str(winners[j]), str(playoffs[j]), str(preseasons[j])))
 
         seasons[i - 8].matches = season_games
 
@@ -127,7 +126,6 @@ def train(seasons):
     odds_away = list()
     preseason = list()
     form = list()
-    book = list()
     who_won = list()
     lb = dict()
     for i, season in enumerate(seasons):
@@ -149,39 +147,39 @@ def train(seasons):
     attributes = pd.DataFrame(data=at)
     labels = pd.DataFrame(data=lb)
 
-    # splitting data 60:20:20, train:validate:test
-
-    attributes_train, attributes_test, labels_train, labels_test = split(attributes, labels, test_size=0.2)
-    attributes_train, attributes_validate, labels_train, labels_validate = split(attributes_train, labels_train,
-                                                                                 test_size=0.25)
-    print("1")
-    # making classifier
-
     classifier = DecisionTreeClassifier(criterion="entropy", ccp_alpha=0.025)
-    print("2")
-    # testing prunning alpha
-
-    path = classifier.cost_complexity_pruning_path(attributes_train, labels_train)
-    alphas = path['ccp_alphas']
-    print("3")
-    #find_ccp_alpha(alphas, attributes, labels)
-    print("4")
-    classifier = classifier.fit(attributes_train, labels_train)
-    print("5")
-    labels_prediction = classifier.predict(attributes_test)
+    classifier = classifier.fit(attributes, labels)
+    return classifier
 
 
-    # Raport
+def report(seasons, classifier):
+    at = dict()
+    odds_home = list()
+    odds_away = list()
+    preseason = list()
+    form = list()
+    who_won = list()
+    lb = dict()
+    for i, season in enumerate(seasons):
+        if i <= 9:
+            continue
+        for match in reversed(season.matches):
+            odds_home.append(match.home_team_odds)
+            odds_away.append(match.away_team_odds)
+            preseason.append(int(match.home_team.value) / int(match.away_team.value))
+            form.append(match.home_team_form - match.away_team_form)
+            who_won.append(match.winner)
+
+    at['odds_home'] = odds_home
+    at['odds_away'] = odds_away
+    at['preseason'] = preseason
+    at['form'] = form
+    lb['winner'] = who_won
+
+    attributes = pd.DataFrame(data=at)
+    labels = pd.DataFrame(data=lb)
+    # Report
     from sklearn.metrics import classification_report
-    print(classification_report(labels_test, labels_prediction))
-
-    x = 0
-    for i in range(len(labels_test.values)):
-        if labels_test.values[i] == labels_prediction[i]:
-            x = x + 1
-
-    print(x/len(labels_test.values))
-    print(labels_test.values)
-    print(labels_prediction)
+    print(classification_report(labels, classifier.predict(attributes)))
 
 
