@@ -2,6 +2,8 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 import jsonpickle
+from sklearn.tree import DecisionTreeClassifier
+
 from playground.models import Season, Team, Match
 import time
 import pandas as pd
@@ -16,16 +18,8 @@ ai.read_games_info(seasons)
 
 ai.calc_form(seasons)
 
-start_time = time.time()
-print("siema")
-ai.train(seasons)
-print("nara")
-
-#print(seasons[0].matches[-1].home_team_form, seasons[0].matches[1357].home_team_form, seasons[0].matches[1357].home_team.name)
-#print(seasons[0].matches[1346].away_team_form, seasons[0].matches[1346].away_team.name)
-#print(seasons[0].matches[1326].home_team_form, seasons[0].matches[1326].home_team.name)
-#print(seasons[0].matches[1314].home_team_form, seasons[0].matches[1314].home_team.name)
-print(time.time()-start_time)
+classifier = ai.train(seasons)
+ai.report(seasons, classifier)
 
 def hello(request):
     context = {
@@ -45,5 +39,14 @@ class SeasonView(APIView):
 class ResultView(APIView):
     def post(self, request):
         match = jsonpickle.decode(request.body.decode('utf-8'))
-        winner = match['home_team_form'] if match['winner'] == '0' else match['away_team_form']
+        at = dict()
+
+        at['odds_home'] = [match['home_team_odds']]
+        at['odds_away'] = [match['away_team_odds']]
+        at['preseason'] = [match['preseason']]
+        at['form'] = [float(match['home_team_form']) / float(match['away_team_form'])]
+
+        attributes = pd.DataFrame(data=at)
+        labels = classifier.predict(attributes)
+        winner = match['home_team'] if int(labels[0]) == 1 else match['away_team']
         return Response(jsonpickle.encode(winner, unpicklable=False))  # return winner

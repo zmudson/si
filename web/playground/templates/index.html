@@ -148,7 +148,6 @@
                     .then(res => {
                         winner = JSON.parse(res);
                         result.textContent = "Result: " + winner.name;
-                        console.dir(winner);
                     });
                 }
             });
