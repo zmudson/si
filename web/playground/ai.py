@@ -11,6 +11,7 @@ from sklearn.tree import DecisionTreeClassifier
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
+
 def read_preseason_odds(seasons):
     PATH = "data\\preseason-odds\\"
 
@@ -34,6 +35,7 @@ def read_preseason_odds(seasons):
         season_teams.sort(key=lambda x: x.name)
 
         seasons.append(Season(str(2000 + i) + '/' + str(2000 + i + 1), season_teams))
+
 
 def read_games_info(seasons):
     PATH = "data\\games\\"
@@ -73,6 +75,7 @@ def read_games_info(seasons):
 
         seasons[i - 8].matches = season_games
 
+
 def calc_form(seasons):
     for season in seasons:
         teams_last_games = [list() for team in season.teams]
@@ -92,6 +95,7 @@ def calc_form(seasons):
             if len(away_team_last_games) == max_games:
                 away_team_last_games.pop(0)
             away_team_last_games.append(int(match.away_team_points) / int(match.home_team_points))
+
 
 def find_ccp_alpha(alphas, attributes, labels):
     accuracy_train, accuracy_validate = [], []
@@ -119,30 +123,9 @@ def find_ccp_alpha(alphas, attributes, labels):
     plt.title("Wykres zależności precyzji od ccp_alpha")
     plt.savefig("data\\prunning.png")
 
+
 def train(seasons):
-
-    at = dict()
-    odds_home = list()
-    odds_away = list()
-    preseason = list()
-    form = list()
-    who_won = list()
-    lb = dict()
-    for i, season in enumerate(seasons):
-        if i > 9:
-            continue
-        for match in reversed(season.matches):
-            odds_home.append(match.home_team_odds)
-            odds_away.append(match.away_team_odds)
-            preseason.append(int(match.home_team.value) / int(match.away_team.value))
-            form.append(match.home_team_form - match.away_team_form)
-            who_won.append(match.winner)
-
-    at['odds_home'] = odds_home
-    at['odds_away'] = odds_away
-    at['preseason'] = preseason
-    at['form'] = form
-    lb['winner'] = who_won
+    at, lb = get_data(seasons[:8])
 
     attributes = pd.DataFrame(data=at)
     labels = pd.DataFrame(data=lb)
@@ -153,28 +136,7 @@ def train(seasons):
 
 
 def report(seasons, classifier):
-    at = dict()
-    odds_home = list()
-    odds_away = list()
-    preseason = list()
-    form = list()
-    who_won = list()
-    lb = dict()
-    for i, season in enumerate(seasons):
-        if i <= 9:
-            continue
-        for match in reversed(season.matches):
-            odds_home.append(match.home_team_odds)
-            odds_away.append(match.away_team_odds)
-            preseason.append(int(match.home_team.value) / int(match.away_team.value))
-            form.append(match.home_team_form - match.away_team_form)
-            who_won.append(match.winner)
-
-    at['odds_home'] = odds_home
-    at['odds_away'] = odds_away
-    at['preseason'] = preseason
-    at['form'] = form
-    lb['winner'] = who_won
+    at, lb = get_data(seasons[9:])
 
     attributes = pd.DataFrame(data=at)
     labels = pd.DataFrame(data=lb)
@@ -183,3 +145,28 @@ def report(seasons, classifier):
     print(classification_report(labels, classifier.predict(attributes)))
 
 
+def get_data(seasons):
+    at = dict()
+    odds_home = list()
+    odds_away = list()
+    preseason = list()
+    form = list()
+    is_favorite_home_team = list()
+    who_won = list()
+    lb = dict()
+    for i, season in enumerate(seasons):
+        for match in reversed(season.matches):
+            odds_home.append(match.home_team_odds)
+            odds_away.append(match.away_team_odds)
+            preseason.append(int(match.home_team.value) / int(match.away_team.value))
+            form.append(match.home_team_form - match.away_team_form)
+            is_favorite_home_team.append(1 if match.home_team_odds < match.away_team_odds else 0)
+            who_won.append(match.winner)
+
+    at['odds_home'] = odds_home
+    at['odds_away'] = odds_away
+    at['preseason'] = preseason
+    at['form'] = form
+    at['is_favorite_home_team'] = is_favorite_home_team
+    lb['winner'] = who_won
+    return at, lb

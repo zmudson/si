@@ -44,6 +44,7 @@ class ResultView(APIView):
         at['odds_home'] = [match['home_team_odds']]
         at['odds_away'] = [match['away_team_odds']]
         at['preseason'] = [match['preseason']]
+        at['is_favorite_home_team'] = 1 if match['home_team_odds'] < match['away_team_odds'] else 0
         at['form'] = [float(match['home_team_form']) / float(match['away_team_form'])]
 
         attributes = pd.DataFrame(data=at)
